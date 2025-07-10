@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -18,15 +18,41 @@ type Medication = {
 };
 
 const initialMedications: Medication[] = [
-  { id: 'med1', name: 'Lisinopril', dosage: '10mg', time: '08:00 AM', taken: true },
-  { id: 'med2', name: 'Metformin', dosage: '500mg', time: '08:00 AM', taken: true },
-  { id: 'med3', name: 'Atorvastatin', dosage: '20mg', time: '08:00 PM', taken: false },
-  { id: 'med4', name: 'Aspirin', dosage: '81mg', time: '08:00 PM', taken: false },
+  { id: 'med1', name: 'Lisinopril', dosage: '10mg', time: '08:00', taken: true },
+  { id: 'med2', name: 'Metformin', dosage: '500mg', time: '08:00', taken: true },
+  { id: 'med3', name: 'Atorvastatin', dosage: '20:00', taken: false },
+  { id: 'med4', name: 'Aspirin', dosage: '81mg', time: '20:00', taken: false },
 ];
 
 function MedicationItem({ medication, onToggle }: { medication: Medication, onToggle: (id: string) => void }) {
-  const isPast = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '') > medication.time.replace(':', '').replace(' AM', '').replace(' PM', (m) => parseInt(m.split(':')[0]) + 12 + m.split(':')[1]);
-  
+  const [isPast, setIsPast] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const checkTime = () => {
+      if (typeof window !== 'undefined') {
+        const now = new Date();
+        const [hours, minutes] = medication.time.split(':');
+        const medTime = new Date();
+        medTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+        setIsPast(now > medTime);
+      }
+    };
+
+    checkTime();
+    const interval = setInterval(checkTime, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, [medication.time]);
+
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    const h = parseInt(hours, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const formattedHour = h % 12 === 0 ? 12 : h % 12;
+    return `${formattedHour}:${minutes} ${ampm}`;
+  }
+
   return (
     <Card className={`transition-all ${medication.taken ? 'bg-green-50' : 'bg-white'}`}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -36,12 +62,12 @@ function MedicationItem({ medication, onToggle }: { medication: Medication, onTo
         </CardTitle>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" />
-          <span>{medication.time}</span>
+          <span>{formatTime(medication.time)}</span>
         </div>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground">Dosage: {medication.dosage}</p>
-        {!medication.taken && isPast && (
+        {isClient && !medication.taken && isPast && (
           <div className="mt-2 flex items-center gap-2 text-sm text-destructive">
             <AlertTriangle className="h-4 w-4" />
             <span>Missed dose</span>
