@@ -6,7 +6,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Clock, PlusCircle, Pill, AlertTriangle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -86,12 +85,8 @@ export default function MedicationSchedule() {
   };
 
   return (
-    <Tabs defaultValue="daily">
-      <div className="flex justify-between items-center">
-        <TabsList>
-          <TabsTrigger value="daily">Daily View</TabsTrigger>
-          <TabsTrigger value="weekly" disabled>Weekly View</TabsTrigger>
-        </TabsList>
+    <div>
+      <div className="flex justify-end items-center mb-4">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -126,20 +121,15 @@ export default function MedicationSchedule() {
         </Dialog>
       </div>
 
-      <TabsContent value="daily" className="mt-4">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {medications.length > 0 ? (
-            medications.map((med) => (
-              <MedicationItem key={med.id} medication={med} onToggle={handleToggleTaken} />
-            ))
-          ) : (
-            <p className="text-muted-foreground col-span-full text-center py-8">No medications scheduled for today.</p>
-          )}
-        </div>
-      </TabsContent>
-      <TabsContent value="weekly">
-        <p className="text-muted-foreground text-center py-8">Weekly view is coming soon.</p>
-      </TabsContent>
-    </Tabs>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {medications.length > 0 ? (
+          medications.map((med) => (
+            <MedicationItem key={med.id} medication={med} onToggle={handleToggleTaken} />
+          ))
+        ) : (
+          <p className="text-muted-foreground col-span-full text-center py-8">No medications scheduled for today.</p>
+        )}
+      </div>
+    </div>
   );
 }
