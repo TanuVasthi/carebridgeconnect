@@ -8,17 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { User, Languages, Palette, Bell } from 'lucide-react';
+import { User, Languages } from 'lucide-react';
+import { useLanguage } from '@/lib/language-provider';
 
 export default function SettingsPage() {
   const { toast } = useToast();
-  const [language, setLanguage] = useState("en");
+  const { language, setLanguage, translate, isTranslating } = useLanguage();
 
   const handleProfileSave = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Profile Updated",
-      description: "Your profile information has been saved successfully.",
+      title: translate("Profile Updated"),
+      description: translate("Your profile information has been saved successfully."),
     });
   };
   
@@ -26,16 +27,16 @@ export default function SettingsPage() {
     setLanguage(value);
     toast({
       title: "Language Changed",
-      description: `App language has been set to ${value}. (This is a demo and does not actually translate).`,
+      description: `App language has been set to ${value}.`,
     });
   }
 
   return (
-    <div className="space-y-8">
+    <div className={`space-y-8 ${isTranslating ? 'opacity-50 pointer-events-none' : ''}`}>
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Settings</CardTitle>
-          <CardDescription>Manage your account settings, profile, and preferences.</CardDescription>
+          <CardTitle className="font-headline text-2xl">{translate('Settings')}</CardTitle>
+          <CardDescription>{translate('Manage your account settings, profile, and preferences.')}</CardDescription>
         </CardHeader>
       </Card>
       
@@ -45,25 +46,25 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <User className="h-5 w-5 text-primary" />
-              <CardTitle>Profile</CardTitle>
+              <CardTitle>{translate('Profile')}</CardTitle>
             </div>
-            <CardDescription>Update your personal information.</CardDescription>
+            <CardDescription>{translate('Update your personal information.')}</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleProfileSave}>
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" defaultValue="User Name" />
+                <Label htmlFor="name">{translate('Full Name')}</Label>
+                <Input id="name" defaultValue={translate("User Name")} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{translate('Email Address')}</Label>
                 <Input id="email" type="email" defaultValue="user@email.com" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">{translate('Phone Number')}</Label>
                 <Input id="phone" type="tel" defaultValue="(123) 456-7890" />
               </div>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit">{translate('Save Changes')}</Button>
             </form>
           </CardContent>
         </Card>
@@ -73,13 +74,13 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Languages className="h-5 w-5 text-primary" />
-              <CardTitle>Language</CardTitle>
+              <CardTitle>{translate('Language')}</CardTitle>
             </div>
-            <CardDescription>Choose your preferred language for the app.</CardDescription>
+            <CardDescription>{translate('Choose your preferred language for the app.')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              <Label htmlFor="language-select">Select Language</Label>
+              <Label htmlFor="language-select">{translate('Select Language')}</Label>
               <Select value={language} onValueChange={handleLanguageChange}>
                 <SelectTrigger id="language-select">
                   <SelectValue placeholder="Select language" />

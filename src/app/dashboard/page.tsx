@@ -1,13 +1,17 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SosIcon } from "@/components/icons";
 import { ArrowRight, Bell, Bot, HeartHandshake, Pill, Users } from "lucide-react";
 import Link from "next/link";
-import { useToast } from "@/hooks/use-toast";
 import EmergencyAlertButton from "./components/emergency-alert-button";
+import { useLanguage } from "@/lib/language-provider";
 
 
 export default function DashboardPage() {
+  const { translate } = useLanguage();
+
   const features = [
     {
       title: "Find Caregivers",
@@ -47,9 +51,9 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <Card className="bg-destructive text-destructive-foreground">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Emergency Alert</CardTitle>
+          <CardTitle className="font-headline text-2xl">{translate('Emergency Alert')}</CardTitle>
           <CardDescription className="text-destructive-foreground/80">
-            In case of an emergency, press the SOS button to immediately notify your contacts with your location.
+            {translate('In case of an emergency, press the SOS button to immediately notify your contacts with your location.')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -65,14 +69,14 @@ export default function DashboardPage() {
                 <feature.icon className={`h-6 w-6 ${feature.color}`} />
               </div>
               <div>
-                <CardTitle className="font-headline">{feature.title}</CardTitle>
-                <CardDescription className="mt-1">{feature.description}</CardDescription>
+                <CardTitle className="font-headline">{translate(feature.title)}</CardTitle>
+                <CardDescription className="mt-1">{translate(feature.description)}</CardDescription>
               </div>
             </CardHeader>
             <CardContent>
               <Button asChild variant="outline" className="w-full">
                 <Link href={feature.href}>
-                  Go to {feature.title} <ArrowRight className="ml-2 h-4 w-4" />
+                  {translate('Go to')} {translate(feature.title)} <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </CardContent>
