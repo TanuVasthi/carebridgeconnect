@@ -39,9 +39,10 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
       
       const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
       let node;
-      while (node = walk.nextNode()) {
+      while ((node = walk.nextNode())) {
         const text = node.textContent?.trim();
-        if (text) {
+        // Simple filter to avoid translating code, symbols, or very short strings.
+        if (text && text.length > 1 && text.match(/[a-zA-Z]/)) {
           const cacheKey = `${language}:${text}`;
           if (!translations[cacheKey]) {
             textsToTranslate.add(text);
