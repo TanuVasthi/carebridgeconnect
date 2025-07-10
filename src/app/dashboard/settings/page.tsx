@@ -49,10 +49,6 @@ export default function SettingsPage() {
           <CardContent>
             <form className="space-y-4" onSubmit={handleProfileSave}>
               <div className="space-y-2">
-                <Label htmlFor="name">{translate('Full Name')}</Label>
-                <Input id="name" defaultValue={translate("User Name")} />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="email">{translate('Email Address')}</Label>
                 <Input id="email" type="email" defaultValue="user@email.com" />
               </div>
