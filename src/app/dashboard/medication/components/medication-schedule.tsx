@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Clock, PlusCircle, Pill, AlertTriangle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguage } from "@/lib/language-provider";
 
 type Medication = {
   id: string;
@@ -28,6 +29,7 @@ const initialMedications: Medication[] = [
 function MedicationItem({ medication, onToggle }: { medication: Medication, onToggle: (id: string) => void }) {
   const [isPast, setIsPast] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const { translate } = useLanguage();
 
   useEffect(() => {
     setIsClient(true);
@@ -71,11 +73,11 @@ function MedicationItem({ medication, onToggle }: { medication: Medication, onTo
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground">Dosage: {medication.dosage}</p>
+        <p className="text-muted-foreground">{translate('Dosage')}: {medication.dosage}</p>
         {isClient && !medication.taken && isPast && (
           <div className="mt-2 flex items-center gap-2 text-sm text-destructive">
             <AlertTriangle className="h-4 w-4" />
-            <span>Missed dose</span>
+            <span>{translate('Missed dose')}</span>
           </div>
         )}
       </CardContent>
@@ -83,7 +85,7 @@ function MedicationItem({ medication, onToggle }: { medication: Medication, onTo
         <div className="flex items-center space-x-2 w-full">
           <Checkbox id={`taken-${medication.id}`} checked={medication.taken} onCheckedChange={() => onToggle(medication.id)} />
           <Label htmlFor={`taken-${medication.id}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Mark as Taken
+            {translate('Mark as Taken')}
           </Label>
         </div>
       </CardFooter>
@@ -94,6 +96,7 @@ function MedicationItem({ medication, onToggle }: { medication: Medication, onTo
 export default function MedicationSchedule() {
   const [medications, setMedications] = useState<Medication[]>(initialMedications);
   const [open, setOpen] = useState(false);
+  const { translate } = useLanguage();
 
   const handleToggleTaken = (id: string) => {
     setMedications(meds => 
@@ -121,31 +124,31 @@ export default function MedicationSchedule() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Add Medication
+              <PlusCircle className="mr-2 h-4 w-4" /> {translate('Add Medication')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Medication</DialogTitle>
-              <DialogDescription>Fill in the details for the new medication reminder.</DialogDescription>
+              <DialogTitle>{translate('Add New Medication')}</DialogTitle>
+              <DialogDescription>{translate('Fill in the details for the new medication reminder.')}</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleAddMedication}>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">Name</Label>
+                  <Label htmlFor="name" className="text-right">{translate('Name')}</Label>
                   <Input id="name" name="name" className="col-span-3" required />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="dosage" className="text-right">Dosage</Label>
+                  <Label htmlFor="dosage" className="text-right">{translate('Dosage')}</Label>
                   <Input id="dosage" name="dosage" placeholder="e.g., 10mg, 1 pill" className="col-span-3" required />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="time" className="text-right">Time</Label>
+                  <Label htmlFor="time" className="text-right">{translate('Time')}</Label>
                   <Input id="time" name="time" type="time" className="col-span-3" required />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Reminder</Button>
+                <Button type="submit">{translate('Save Reminder')}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -158,7 +161,7 @@ export default function MedicationSchedule() {
             <MedicationItem key={med.id} medication={med} onToggle={handleToggleTaken} />
           ))
         ) : (
-          <p className="text-muted-foreground col-span-full text-center py-8">No medications scheduled for today.</p>
+          <p className="text-muted-foreground col-span-full text-center py-8">{translate('No medications scheduled for today.')}</p>
         )}
       </div>
     </div>

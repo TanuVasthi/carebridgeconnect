@@ -2,8 +2,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useTransition } from 'react';
-import { usePathname } from 'next/navigation';
 import { translateTextFlow } from '@/ai/flows/translate-flow';
+import { ALL_TEXTS } from '@/lib/translatable-texts';
 
 type LanguageContextType = {
   language: string;
@@ -18,7 +18,6 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const [language, setLanguage] = useState('en');
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
-  const pathname = usePathname();
 
   const translate = useCallback((text: string): string => {
     if (language === 'en' || !text) {
@@ -34,51 +33,33 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
       return;
     }
 
-    const collectAndTranslateTexts = () => {
-      const textsToTranslate = new Set<string>();
-      
-      const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-      let node;
-      while ((node = walk.nextNode())) {
-        const text = node.textContent?.trim();
-        // Simple filter to avoid translating code, symbols, or very short strings.
-        if (text && text.length > 1 && text.match(/[a-zA-Z]/)) {
-          const cacheKey = `${language}:${text}`;
-          if (!translations[cacheKey]) {
-            textsToTranslate.add(text);
-          }
+    const translateAllTexts = () => {
+      startTransition(async () => {
+        try {
+          const textsToTranslate = ALL_TEXTS.filter(text => !translations[`${language}:${text}`]);
+          if (textsToTranslate.length === 0) return;
+
+          const { translations: newTranslations } = await translateTextFlow({
+            texts: textsToTranslate,
+            targetLanguage: language,
+          });
+
+          setTranslations(prev => {
+            const updated = { ...prev };
+            for (const original in newTranslations) {
+              const cacheKey = `${language}:${original}`;
+              updated[cacheKey] = newTranslations[original];
+            }
+            return updated;
+          });
+        } catch (error) {
+          console.error("Translation error:", error);
         }
-      }
-
-      if (textsToTranslate.size > 0) {
-        startTransition(async () => {
-          try {
-            const { translations: newTranslations } = await translateTextFlow({
-              texts: Array.from(textsToTranslate),
-              targetLanguage: language,
-            });
-            
-            setTranslations(prev => {
-              const updated = { ...prev };
-              for (const original in newTranslations) {
-                const cacheKey = `${language}:${original}`;
-                updated[cacheKey] = newTranslations[original];
-              }
-              return updated;
-            });
-          } catch (error) {
-            console.error("Translation error:", error);
-          }
-        });
-      }
+      });
     };
-    
-    // We use a short timeout to allow the new page's content to render before we collect text.
-    const timeoutId = setTimeout(collectAndTranslateTexts, 100);
 
-    return () => clearTimeout(timeoutId);
-
-  }, [language, pathname]);
+    translateAllTexts();
+  }, [language]);
 
 
   const contextValue = {

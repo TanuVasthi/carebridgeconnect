@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -5,7 +6,6 @@ import {
   Sidebar,
   SidebarHeader,
   SidebarContent,
-  SidebarInset,
   SidebarFooter,
   SidebarTrigger,
   SidebarMenu,
@@ -58,7 +58,7 @@ export default function MainDashboardLayout({
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <AppLogo className="h-8 w-8 text-primary" />
-            <span className="text-lg font-semibold font-headline">{translate('CareBridge')}</span>
+            <span className="text-lg font-semibold font-headline">{translate('CareBridge Connect')}</span>
           </div>
         </SidebarHeader>
         <SidebarContent>

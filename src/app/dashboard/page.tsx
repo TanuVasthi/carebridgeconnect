@@ -1,9 +1,9 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { SosIcon } from "@/components/icons";
-import { ArrowRight, Bell, Bot, HeartHandshake, Pill, Users } from "lucide-react";
+import { ArrowRight, Bot, HeartHandshake, Pill, Users } from "lucide-react";
 import Link from "next/link";
 import EmergencyAlertButton from "./components/emergency-alert-button";
 import { useLanguage } from "@/lib/language-provider";

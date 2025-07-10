@@ -1,8 +1,12 @@
+
+"use client";
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Lightbulb, Footprints, Home, ShieldCheck } from "lucide-react";
+import { useLanguage } from "@/lib/language-provider";
 
-const healthTips = [
+const healthTipsData = [
   {
     id: "tip1",
     icon: Home,
@@ -37,30 +41,32 @@ const healthTips = [
 ];
 
 export default function HealthTipsPage() {
+  const { translate } = useLanguage();
+
   return (
     <div className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Health & Wellness Tips</CardTitle>
+          <CardTitle className="font-headline text-2xl">{translate('Health & Wellness Tips')}</CardTitle>
           <CardDescription>
-            Simple and effective tips for a healthier, safer life. This section focuses on fall prevention for seniors.
+            {translate('Simple and effective tips for a healthier, safer life. This section focuses on fall prevention for seniors.')}
           </CardDescription>
         </CardHeader>
       </Card>
 
       <Accordion type="single" collapsible className="w-full" defaultValue="tip1">
-        {healthTips.map((tip) => (
+        {healthTipsData.map((tip) => (
           <AccordionItem key={tip.id} value={tip.id}>
             <AccordionTrigger className="text-lg font-semibold hover:no-underline">
               <div className="flex items-center gap-3">
                 <tip.icon className="h-6 w-6 text-primary" />
-                <span>{tip.title}</span>
+                <span>{translate(tip.title)}</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc space-y-2 pl-6 text-base text-muted-foreground">
                 {tip.content.map((point, index) => (
-                  <li key={index}>{point}</li>
+                  <li key={index}>{translate(point)}</li>
                 ))}
               </ul>
             </AccordionContent>

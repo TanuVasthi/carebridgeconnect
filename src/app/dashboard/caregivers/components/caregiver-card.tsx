@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -7,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Star, Phone, Mail, Award } from 'lucide-react';
+import { useLanguage } from '@/lib/language-provider';
 
 type Caregiver = {
   id: string;
@@ -24,6 +26,7 @@ type Caregiver = {
 };
 
 export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
+  const { translate } = useLanguage();
   return (
     <Dialog>
       <Card className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300">
@@ -55,7 +58,7 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
         </CardContent>
         <CardFooter>
           <DialogTrigger asChild>
-            <Button className="w-full">View Profile</Button>
+            <Button className="w-full">{translate('View Profile')}</Button>
           </DialogTrigger>
         </CardFooter>
       </Card>
@@ -71,9 +74,9 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
               <DialogTitle className="text-xl font-headline">{caregiver.name}</DialogTitle>
               <div className="flex items-center gap-2 text-amber-500 mt-1">
                   <Star className="h-4 w-4 fill-current" />
-                  <DialogDescription>
-                    {caregiver.rating.toFixed(1)} Rating
-                  </DialogDescription>
+                  <span className="text-sm text-muted-foreground">
+                    {caregiver.rating.toFixed(1)} {translate('Rating')}
+                  </span>
               </div>
             </div>
           </div>
@@ -81,7 +84,7 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
         <div className="py-4 space-y-4">
           <p className="text-sm text-foreground">{caregiver.bio}</p>
           <div>
-            <h4 className="font-semibold mb-2">Skills</h4>
+            <h4 className="font-semibold mb-2">{translate('Skills')}</h4>
             <div className="flex flex-wrap gap-2">
               {caregiver.skills.map((skill) => (
                 <Badge key={skill} variant="outline">{skill}</Badge>
@@ -89,7 +92,7 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
             </div>
           </div>
           <div>
-            <h4 className="font-semibold mb-2">Contact Information</h4>
+            <h4 className="font-semibold mb-2">{translate('Contact Information')}</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />

@@ -1,5 +1,9 @@
+
+"use client";
+
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import CaregiverCard from './components/caregiver-card';
+import { useLanguage } from "@/lib/language-provider";
 
 const caregivers = [
   {
@@ -62,12 +66,13 @@ const caregivers = [
 
 
 export default function CaregiversPage() {
+  const { translate } = useLanguage();
   return (
     <div className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Caregiver Directory</CardTitle>
-          <CardDescription>Find the perfect caregiver to meet your needs. Browse profiles, skills, and ratings.</CardDescription>
+          <CardTitle className="font-headline text-2xl">{translate('Caregiver Directory')}</CardTitle>
+          <CardDescription>{translate('Find the perfect caregiver to meet your needs. Browse profiles, skills, and ratings.')}</CardDescription>
         </CardHeader>
       </Card>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

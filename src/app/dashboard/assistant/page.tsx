@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -7,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, Send, User, Loader2 } from "lucide-react";
 import { getSmartHealthResponse } from "./actions";
+import { useLanguage } from "@/lib/language-provider";
 
 type Message = {
   role: "user" | "assistant";
@@ -14,6 +16,7 @@ type Message = {
 };
 
 export default function AssistantPage() {
+  const { translate } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +41,7 @@ export default function AssistantPage() {
     } catch (error) {
       const errorMessage: Message = {
         role: "assistant",
-        content: "Sorry, I encountered an error. Please try again.",
+        content: translate("Sorry, I encountered an error. Please try again."),
       };
       setMessages((prev) => [...prev, errorMessage]);
       console.error("Error fetching smart health response:", error);
@@ -51,9 +54,9 @@ export default function AssistantPage() {
     <div className="h-[calc(100vh-10rem)] flex flex-col">
       <Card className="mb-4">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl flex items-center gap-2"><Bot className="text-primary"/>Smart Health Assistant</CardTitle>
+          <CardTitle className="font-headline text-2xl flex items-center gap-2"><Bot className="text-primary"/>{translate('Smart Health Assistant')}</CardTitle>
           <CardDescription>
-            Ask any health-related question, and our AI assistant will provide helpful guidance. Please note: this is not a substitute for professional medical advice.
+            {translate('Ask any health-related question, and our AI assistant will provide helpful guidance. Please note: this is not a substitute for professional medical advice.')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -62,8 +65,8 @@ export default function AssistantPage() {
         <CardContent className="flex-grow overflow-y-auto p-4 space-y-6">
           {messages.length === 0 && (
             <div className="text-center text-muted-foreground mt-8">
-              <p>No messages yet. Ask a question to start the conversation!</p>
-              <p className="text-sm mt-2">e.g., "What are some exercises to improve balance?"</p>
+              <p>{translate('No messages yet. Ask a question to start the conversation!')}</p>
+              <p className="text-sm mt-2">{translate('e.g., "What are some exercises to improve balance?"')}</p>
             </div>
           )}
           {messages.map((message, index) => (
@@ -99,7 +102,7 @@ export default function AssistantPage() {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a health question..."
+              placeholder={translate("Ask a health question...")}
               className="flex-grow resize-none"
               rows={1}
               disabled={isLoading}

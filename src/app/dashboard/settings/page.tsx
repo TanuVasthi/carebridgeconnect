@@ -25,10 +25,6 @@ export default function SettingsPage() {
   
   const handleLanguageChange = (value: string) => {
     setLanguage(value);
-    toast({
-      title: "Language Changed",
-      description: `App language has been set to ${value}.`,
-    });
   }
 
   return (
