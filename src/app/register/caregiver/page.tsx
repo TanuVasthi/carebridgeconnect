@@ -2,6 +2,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,13 @@ import { LanguageProvider, useLanguage } from '@/lib/language-provider';
 
 
 function CaregiverRegistrationForm() {
+  const router = useRouter();
   const { translate } = useLanguage();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    router.push('/dashboard');
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -33,7 +40,7 @@ function CaregiverRegistrationForm() {
             <CardDescription>{translate('Join our network of professional caregivers.')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <Label htmlFor="name">{translate('Full Name')}</Label>
                 <Input id="name" placeholder="Jane Smith" required />
