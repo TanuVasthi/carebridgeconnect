@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useTransition } from 'react';
-import { translateText } from '@/ai/flows/translate-flow';
+import { translateTextFlow } from '@/ai/flows/translate-flow';
 
 type LanguageContextType = {
   language: string;
@@ -22,57 +22,54 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     if (language === 'en' || !text) {
       return text;
     }
+    // The translation logic will use a cache of translated strings
+    // The cache key includes the language to avoid conflicts
     const cacheKey = `${language}:${text}`;
     return translations[cacheKey] || text;
   }, [language, translations]);
 
   useEffect(() => {
+    if (language === 'en') {
+      setTranslations({});
+      return;
+    }
+
     const observer = new MutationObserver((mutations) => {
-      if (language === 'en') return;
-
-      const newTexts = new Set<string>();
-      
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-                 newTexts.add(node.textContent.trim());
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
-                const element = node as HTMLElement;
-                element.querySelectorAll<HTMLElement>(':not(script):not(style)')
-                 .forEach(el => {
-                    if (el.innerText && el.innerText.trim()) {
-                        // Check if it has only text content
-                        if (Array.from(el.childNodes).every(cn => cn.nodeType === Node.TEXT_NODE) && el.innerText.trim()) {
-                             newTexts.add(el.innerText.trim());
-                        }
-                    }
-                });
-            }
-          });
-        }
-      });
-
-      if (newTexts.size > 0) {
-        startTransition(async () => {
-          const textsToTranslate: string[] = [];
-          newTexts.forEach(text => {
-            const cacheKey = `${language}:${text}`;
-            if (!translations[cacheKey]) {
-              textsToTranslate.push(text);
-            }
-          });
-
-          if (textsToTranslate.length > 0) {
+      startTransition(async () => {
+        const newTexts = new Set<string>();
+        
+        document.querySelectorAll('body, body *').forEach(el => {
+            if (el.shadowRoot) return; // Don't touch shadow DOM
+            Array.from(el.childNodes).forEach(node => {
+              if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+                const text = node.textContent.trim();
+                 const cacheKey = `${language}:${text}`;
+                if (!translations[cacheKey]) {
+                  newTexts.add(text);
+                }
+              }
+            });
+        });
+        
+        if (newTexts.size > 0) {
             try {
-              const newTranslations = await translateText({ texts: textsToTranslate, targetLanguage: language });
-              setTranslations(prev => ({ ...prev, ...newTranslations.translations }));
+              const textsToTranslate = Array.from(newTexts);
+              const { translations: newTranslations } = await translateTextFlow({ texts: textsToTranslate, targetLanguage: language });
+              
+              setTranslations(prev => {
+                const updated = {...prev};
+                for(const original in newTranslations) {
+                    const cacheKey = `${language}:${original}`;
+                    updated[cacheKey] = newTranslations[original];
+                }
+                return updated;
+              });
+
             } catch (error) {
               console.error("Translation error:", error);
             }
-          }
-        });
-      }
+        }
+      });
     });
 
     observer.observe(document.body, {
@@ -80,6 +77,34 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
       subtree: true,
       characterData: true,
     });
+
+    // Initial translation
+    startTransition(() => {
+       const initialTexts = new Set<string>();
+       document.querySelectorAll('body, body *').forEach(el => {
+            if (el.shadowRoot) return; // Don't touch shadow DOM
+            Array.from(el.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+                    initialTexts.add(node.textContent.trim());
+                }
+            });
+        });
+
+       if (initialTexts.size > 0) {
+          (async () => {
+            const { translations: newTranslations } = await translateTextFlow({ texts: Array.from(initialTexts), targetLanguage: language });
+            setTranslations(prev => {
+                const updated = {...prev};
+                for(const original in newTranslations) {
+                    const cacheKey = `${language}:${original}`;
+                    updated[cacheKey] = newTranslations[original];
+                }
+                return updated;
+              });
+          })();
+       }
+    });
+
 
     return () => observer.disconnect();
   }, [language, translations]);
