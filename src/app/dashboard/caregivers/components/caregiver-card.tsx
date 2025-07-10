@@ -33,9 +33,9 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
         <CardHeader className="flex flex-col items-center text-center">
           <Avatar className="h-24 w-24 border-4 border-primary/20">
             <AvatarImage src={caregiver.avatarUrl} alt={caregiver.name} data-ai-hint={caregiver.dataAiHint} />
-            <AvatarFallback>{caregiver.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{translate(caregiver.name).charAt(0)}</AvatarFallback>
           </Avatar>
-          <CardTitle className="mt-4 font-headline">{caregiver.name}</CardTitle>
+          <CardTitle className="mt-4 font-headline">{translate(caregiver.name)}</CardTitle>
           <div className="flex items-center gap-2 text-muted-foreground mt-1">
             <div className="flex items-center gap-1 text-amber-500">
               <Star className="h-4 w-4 fill-current" />
@@ -49,10 +49,10 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
           </div>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="text-sm text-muted-foreground text-center mb-4">{caregiver.bio.substring(0, 80)}...</p>
+          <p className="text-sm text-muted-foreground text-center mb-4">{translate(caregiver.bio).substring(0, 80)}...</p>
           <div className="flex flex-wrap justify-center gap-2">
             {caregiver.skills.map((skill) => (
-              <Badge key={skill} variant="secondary">{skill}</Badge>
+              <Badge key={skill} variant="secondary">{translate(skill)}</Badge>
             ))}
           </div>
         </CardContent>
@@ -68,10 +68,10 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={caregiver.avatarUrl} alt={caregiver.name} data-ai-hint={caregiver.dataAiHint} />
-              <AvatarFallback>{caregiver.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{translate(caregiver.name).charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
-              <DialogTitle className="text-xl font-headline">{caregiver.name}</DialogTitle>
+              <DialogTitle className="text-xl font-headline">{translate(caregiver.name)}</DialogTitle>
               <div className="flex items-center gap-2 text-amber-500 mt-1">
                   <Star className="h-4 w-4 fill-current" />
                   <span className="text-sm text-muted-foreground">
@@ -82,12 +82,12 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
           </div>
         </DialogHeader>
         <div className="py-4 space-y-4">
-          <p className="text-sm text-foreground">{caregiver.bio}</p>
+          <p className="text-sm text-foreground">{translate(caregiver.bio)}</p>
           <div>
             <h4 className="font-semibold mb-2">{translate('Skills')}</h4>
             <div className="flex flex-wrap gap-2">
               {caregiver.skills.map((skill) => (
-                <Badge key={skill} variant="outline">{skill}</Badge>
+                <Badge key={skill} variant="outline">{translate(skill)}</Badge>
               ))}
             </div>
           </div>

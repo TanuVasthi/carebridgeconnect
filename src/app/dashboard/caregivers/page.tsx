@@ -18,7 +18,7 @@ const caregivers = [
       phone: '555-0101',
       email: 'sarah.j@example.com',
     },
-    bio: 'Compassionate and experienced caregiver with 8 years of dedication to providing high-quality in-home care. Specialized in dementia and Alzheimer\'s care.'
+    bio: "Compassionate and experienced caregiver with 8 years of dedication to providing high-quality in-home care. Specialized in dementia and Alzheimer's care."
   },
   {
     id: '2',
