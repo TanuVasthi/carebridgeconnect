@@ -54,10 +54,12 @@ export default function DashboardLayout({
         <SidebarFooter>
            <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Settings />
-                <span>Settings</span>
-              </SidebarMenuButton>
+              <Link href="/dashboard/settings">
+                <SidebarMenuButton>
+                  <Settings />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
              <SidebarMenuItem>
                 <SidebarMenuButton>
