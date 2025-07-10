@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,7 +21,7 @@ type Medication = {
 const initialMedications: Medication[] = [
   { id: 'med1', name: 'Lisinopril', dosage: '10mg', time: '08:00', taken: true },
   { id: 'med2', name: 'Metformin', dosage: '500mg', time: '08:00', taken: true },
-  { id: 'med3', name: 'Atorvastatin', dosage: '20:00', taken: false },
+  { id: 'med3', name: 'Atorvastatin', dosage: '40mg', time: '20:00', taken: false },
   { id: 'med4', name: 'Aspirin', dosage: '81mg', time: '20:00', taken: false },
 ];
 
@@ -30,22 +31,26 @@ function MedicationItem({ medication, onToggle }: { medication: Medication, onTo
 
   useEffect(() => {
     setIsClient(true);
-    const checkTime = () => {
-      if (typeof window !== 'undefined') {
+  }, []);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkTime = () => {
         const now = new Date();
         const [hours, minutes] = medication.time.split(':');
         const medTime = new Date();
         medTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
         setIsPast(now > medTime);
-      }
-    };
+      };
 
-    checkTime();
-    const interval = setInterval(checkTime, 60000); // Check every minute
-    return () => clearInterval(interval);
+      checkTime();
+      const interval = setInterval(checkTime, 60000); // Check every minute
+      return () => clearInterval(interval);
+    }
   }, [medication.time]);
 
   const formatTime = (time: string) => {
+    if (!time) return '';
     const [hours, minutes] = time.split(':');
     const h = parseInt(hours, 10);
     const ampm = h >= 12 ? 'PM' : 'AM';
