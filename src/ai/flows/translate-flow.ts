@@ -27,16 +27,28 @@ export async function translateText(input: TranslateTextInput): Promise<Translat
   return translateTextFlow(input);
 }
 
+// Define a more structured output schema for the AI model
+const TranslationPairSchema = z.object({
+  original: z.string().describe('The original English text.'),
+  translation: z.string().describe('The translated text.'),
+});
+
+const StructuredTranslateOutputSchema = z.object({
+  translations: z.array(TranslationPairSchema).describe('An array of translation pairs.'),
+});
+
+
 const prompt = ai.definePrompt({
   name: 'translateTextPrompt',
   input: { schema: z.object({ ...TranslateTextInputSchema.shape, jsonTexts: z.string() }) },
-  output: { schema: TranslateTextOutputSchema },
+  output: { schema: StructuredTranslateOutputSchema },
   prompt: `Translate the following JSON array of English texts to the target language: {{targetLanguage}}.
-Return a JSON object where keys are the original English strings and values are the translated strings.
+Return a JSON object containing an array of "translations", where each element is an object with "original" and "translation" keys.
 
 Example:
-Input: { "texts": ["Hello", "How are you?"], "targetLanguage": "fr" }
-Output: { "translations": { "Hello": "Bonjour", "How are you?": "Comment ça va?" } }
+Input Texts: ["Hello", "How are you?"]
+Target Language: "fr"
+Output: { "translations": [{ "original": "Hello", "translation": "Bonjour" }, { "original": "How are you?", "translation": "Comment ça va?" }] }
 
 Texts to translate:
 {{{jsonTexts}}}
@@ -57,6 +69,26 @@ const translateTextFlow = ai.defineFlow(
       ...input,
       jsonTexts: JSON.stringify(input.texts),
     });
-    return output!;
+
+    if (!output) {
+      return { translations: {} };
+    }
+
+    // Convert the structured array back to the record format the app expects
+    const translationsRecord: Record<string, string> = {};
+    for (const pair of output.translations) {
+        if(input.texts.includes(pair.original)) {
+            translationsRecord[pair.original] = pair.translation;
+        }
+    }
+    
+    // Fill any missing translations with original text
+    for (const text of input.texts) {
+        if (!translationsRecord[text]) {
+            translationsRecord[text] = text;
+        }
+    }
+
+    return { translations: translationsRecord };
   }
 );
