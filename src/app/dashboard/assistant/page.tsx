@@ -74,7 +74,7 @@ export default function AssistantPage() {
                 </Avatar>
               )}
               <div className={`rounded-lg p-3 max-w-lg ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
               {message.role === 'user' && (
                 <Avatar className="h-8 w-8">
