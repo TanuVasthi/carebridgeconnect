@@ -29,7 +29,7 @@ export async function translateText(input: TranslateTextInput): Promise<Translat
 
 const prompt = ai.definePrompt({
   name: 'translateTextPrompt',
-  input: { schema: TranslateTextInputSchema },
+  input: { schema: z.object({ ...TranslateTextInputSchema.shape, jsonTexts: z.string() }) },
   output: { schema: TranslateTextOutputSchema },
   prompt: `Translate the following JSON array of English texts to the target language: {{targetLanguage}}.
 Return a JSON object where keys are the original English strings and values are the translated strings.
@@ -39,7 +39,7 @@ Input: { "texts": ["Hello", "How are you?"], "targetLanguage": "fr" }
 Output: { "translations": { "Hello": "Bonjour", "How are you?": "Comment ça va?" } }
 
 Texts to translate:
-{{jsonStringify texts}}
+{{{jsonTexts}}}
 `,
 });
 
@@ -53,7 +53,10 @@ const translateTextFlow = ai.defineFlow(
     if (input.texts.length === 0) {
       return { translations: {} };
     }
-    const { output } = await prompt(input);
+    const { output } = await prompt({
+      ...input,
+      jsonTexts: JSON.stringify(input.texts),
+    });
     return output!;
   }
 );
