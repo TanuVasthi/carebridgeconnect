@@ -69,12 +69,12 @@ export default function CaregiverCard({ caregiver }: { caregiver: Caregiver }) {
             </Avatar>
             <div>
               <DialogTitle className="text-xl font-headline">{caregiver.name}</DialogTitle>
-              <DialogDescription>
-                <div className="flex items-center gap-2 text-amber-500 mt-1">
+              <div className="flex items-center gap-2 text-amber-500 mt-1">
                   <Star className="h-4 w-4 fill-current" />
-                  <span>{caregiver.rating.toFixed(1)} Rating</span>
-                </div>
-              </DialogDescription>
+                  <DialogDescription>
+                    {caregiver.rating.toFixed(1)} Rating
+                  </DialogDescription>
+              </div>
             </div>
           </div>
         </DialogHeader>
