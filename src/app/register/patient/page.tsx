@@ -1,4 +1,8 @@
+
+"use client";
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,6 +11,15 @@ import { AppLogo } from '@/components/icons';
 import { ArrowLeft } from 'lucide-react';
 
 export default function PatientRegistrationPage() {
+  const router = useRouter();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // In a real application, you would handle user registration here.
+    // For this example, we'll just redirect to the dashboard.
+    router.push('/dashboard');
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -25,7 +38,7 @@ export default function PatientRegistrationPage() {
             <CardDescription>Create your account to get started.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input id="name" placeholder="John Doe" required />
