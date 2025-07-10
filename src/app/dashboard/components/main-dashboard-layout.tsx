@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AppLogo } from "@/components/icons";
 import { useLanguage } from "@/lib/language-provider";
 import { usePathname } from 'next/navigation';
+import { Bot, HeartHandshake, Home, Pill, Settings, Users } from "lucide-react";
 
 type NavItem = {
     href: string;
@@ -24,12 +25,18 @@ type NavItem = {
     label: string;
 }
 
+const navItems: NavItem[] = [
+  { href: "/dashboard", icon: Home, label: "Dashboard" },
+  { href: "/dashboard/caregivers", icon: Users, label: "Caregivers" },
+  { href: "/dashboard/medication", icon: Pill, label: "Medication" },
+  { href: "/dashboard/health-tips", icon: HeartHandshake, label: "Health Tips" },
+  { href: "/dashboard/assistant", icon: Bot, label: "AI Assistant" },
+];
+
 export default function MainDashboardLayout({
   children,
-  navItems
 }: {
   children: React.ReactNode;
-  navItems: NavItem[];
 }) {
   const { translate } = useLanguage();
   const pathname = usePathname();
