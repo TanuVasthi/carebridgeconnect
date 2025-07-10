@@ -32,6 +32,7 @@ const navItems: NavItem[] = [
   { href: "/dashboard/medication", icon: Pill, label: "Medication" },
   { href: "/dashboard/health-tips", icon: HeartHandshake, label: "Health Tips" },
   { href: "/dashboard/assistant", icon: Bot, label: "AI Assistant" },
+  { href: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];
 
 export default function MainDashboardLayout({
@@ -77,28 +78,6 @@ export default function MainDashboardLayout({
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-           <SidebarMenu>
-            <SidebarMenuItem>
-              <Link href="/dashboard/settings">
-                <SidebarMenuButton>
-                  <Settings />
-                  <span>{translate('Settings')}</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-             <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://placehold.co/40x40.png" alt="User" data-ai-hint="person avatar" />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span className="font-semibold">{translate('User Name')}</span>
-                    <span className="text-xs text-muted-foreground">user@email.com</span>
-                  </div>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
